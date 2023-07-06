@@ -5,6 +5,7 @@
 - for of
 
 <script>
+  // ES6 이전에는 array의 값의 length라는 프로퍼티에 의존했고, 숫자라는 키(i)로 내부의 값(list[i])을 순회하도록 i를 증가시켜 주면서 array 안에 있는 값을 순회하는 식이었다.
   const list = [1, 2, 3];
   for (var i = 0; i < list.length; i++) {
     // log(list[i]);
@@ -13,6 +14,8 @@
   for (var i = 0; i < str.length; i++) {
     // log(str[i]);
   }
+
+   // ES6 이후에는 순회하는 방법이 보다 선언적으로 간결하게 바뀌었다. 이것은 복잡한 for문을 간결하게 쓴 것 이상에 의미가 있다 아래 Array, Set, Map을 통해 보자
   for (const a of list) {
     // log(a);
   }
@@ -28,6 +31,9 @@
   const arr = [1, 2, 3];
   let iter1 = arr[Symbol.iterator]();
   for (const a of iter1) log(a);
+  // 1
+  // 2
+  // 3
 </script>
 
 ### Set을 통해 알아보기
@@ -36,6 +42,9 @@
   log('Set -----------');
   const set = new Set([1, 2, 3]);
   for (const a of set) log(a);
+  // 1
+  // 2
+  // 3
 </script>
 
 ### Map을 통해 알아보기
@@ -47,14 +56,25 @@
   for (const a of map.values()) log(a);
   for (const a of map.entries()) log(a);
   console.clear();
+
+// Map의 메서드인 keys() values() entries() 모두 이터레이터를 리턴한다. 즉 이터러블이 된다. 그렇다는 것은 이터레이터로 반환 된 것이 또 이터레이터를 반환하는 것이다. 그래서 반환 된 이터레이터를 가지고 다시 또 for of로 순회를 할 수 있다.
+
 </script>
+자바스크립트에는 Array, Set, Map이라는 내장 값들을 가지고 있는데 이 값들을 모두 for of 문으로 순회 할 수 있다. 어떻게 for of가 동작하고 리스트를 순회하는지 추상화하였지 알아보겠다.  
+
+for of문이 ES6이전에 for문 로직(i,length,등등)을 내포하고 있지 않다.
+Array는 키로 리스트 값을 조회할 수 있다. ( array[index] ),
+
+하지만 Set을 보면 new Set([1, 2, 3])[index] 이런식으로 조회가 되지 않는다. Map도 마찬가지다 그런데 for of 문을 예제를 보면 하나씩 값을 순회하고 있다.
+
+JS 내장 객체인 Array, Set, Map 이터러블/이터레이터 프로토콜을 따르고 있다.
 
 ## 이터러블/이터레이터 프로토콜
-- 이터러블: 이터레이터를 리턴하는 [Symbol.iterator]() 를 가진 값
-- 이터레이터: { value, done } 객체를 리턴하는 next() 를 가진 값
+- 이터러블: 이터레이터를 리턴하는 [Symbol.iterator]() 메서드를 가진 값
+- 이터레이터: { value, done } 객체를 리턴하는 next() 메서드를 가진 값
 - 이터러블/이터레이터 프로토콜: 이터러블을 for...of, 전개 연산자 등과 함께 동작하도록한 규약
 
-### 사용자 정의 이터러블을 통해 알아보기
+### 사용자 정의 이터러블 구현을 통해 이터러블 알아보기
 
 <script>
   const iterable = {
@@ -93,10 +113,12 @@
 </script>
 
 ## 전개 연산자
+전개 연산자도 이터러블/이터레이터 프로토콜을 따른다.
+
 
 <script>
   console.clear();
   const a = [1, 2];
-  // a[Symbol.iterator] = null;
+  // a[Symbol.iterator] = null; 이 주석을 해제하면 아래 코드에서  a is not iterable이라는 에러가 발생한다.
   log([...a, ...arr, ...set, ...map.keys()]);
 </script>
