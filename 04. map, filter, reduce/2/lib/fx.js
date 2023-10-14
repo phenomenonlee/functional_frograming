@@ -26,3 +26,5 @@ const reduce = (f, acc, iter) => {
   }
   return acc;
 };
+
+// (a, f) => f(a)
